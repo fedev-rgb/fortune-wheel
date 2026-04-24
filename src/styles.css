@@ -3,11 +3,7 @@ body {
   height: 100vh;
   overflow: hidden;
 
-  background: radial-gradient(circle at center,
-    #2a0000 0%,
-    #120000 45%,
-    #050000 100%
-  );
+  background: radial-gradient(circle at center, #ff0000, #7a1414 45%, #8a1e1e);
 }
 
 body::before {
