@@ -17,53 +17,76 @@ export class UI {
       color: "white",
       fontFamily: "sans-serif",
       zIndex: "10",
+
+      // ✨ transition layer (important)
+      transition: "opacity 0.25s ease",
+      opacity: "1",
     });
   }
 
   render(state: GameState) {
-    this.root.innerHTML = "";
+    // 🔥 fade out before rebuild
+    this.root.style.opacity = "0.2";
 
-    const add = (text: string) => {
-      const div = document.createElement("div");
-      div.textContent = text;
-      this.root.appendChild(div);
-    };
+    setTimeout(() => {
+      this.root.innerHTML = "";
 
-    add(`Balance: ${state.balance.toFixed(2)}`);
-    add(`Win: ${state.lastWin.toFixed(2)}`);
+      const add = (text: string) => {
+        const div = document.createElement("div");
+        div.textContent = text;
+        this.root.appendChild(div);
+      };
 
-    if (state.screen === Screen.MAIN) {
-      add("Wheel Game");
+      add(`Balance: ${state.balance.toFixed(2)}`);
+      add(`Win: ${state.lastWin.toFixed(2)}`);
 
-      const btn = this.button("Play", this.onStart);
-      this.root.appendChild(btn);
-    }
+      // MAIN SCREEN
+      if (state.screen === Screen.MAIN) {
+        add("Wheel Game");
 
-    if (state.screen === Screen.BONUS) {
-      add("Press to spin");
+        const btn = this.button("Play", this.onStart);
+        this.root.appendChild(btn);
+      }
 
-      const btn = this.button(
-        state.spinning ? "Spinning..." : "Spin",
-        this.onSpin,
-      );
+      // BONUS SCREEN
+      if (state.screen === Screen.BONUS) {
+        add("Press to spin");
 
-      btn.disabled = state.spinning;
-      this.root.appendChild(btn);
-    }
+        const btn = this.button(
+          state.spinning ? "Spinning..." : "Spin",
+          this.onSpin,
+        );
 
-    if (state.screen === Screen.RESULT) {
-      add(`You won ${state.lastWin.toFixed(2)}`);
+        btn.disabled = state.spinning;
+        this.root.appendChild(btn);
+      }
 
-      const btn = this.button("Back", this.onBack);
-      this.root.appendChild(btn);
-    }
+      // RESULT SCREEN
+      if (state.screen === Screen.RESULT) {
+        add(`You won ${state.lastWin.toFixed(2)}`);
+
+        const btn = this.button("Back", this.onBack);
+        this.root.appendChild(btn);
+      }
+
+      // 🔥 fade back in
+      requestAnimationFrame(() => {
+        this.root.style.opacity = "1";
+      });
+    }, 120);
   }
 
   private button(label: string, action: () => void) {
     const btn = document.createElement("button");
+
     btn.textContent = label;
     btn.onclick = action;
-    btn.style.marginTop = "10px";
+
+    Object.assign(btn.style, {
+      marginTop: "10px",
+      cursor: "pointer",
+    });
+
     return btn;
   }
 }
